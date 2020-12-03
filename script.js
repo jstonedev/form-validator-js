@@ -19,11 +19,18 @@ const showSuccess = (input) => {
 	formControl.className = "form-control success";
 };
 
-// Check email is valid
-const validateEmail = (email) => {
+// Get the input name
+const getFieldName = (input) => {
+	return input.id.charAt(0).toUpperCase() + input.id.slice(1);
+};
+
+// Check email validation
+const validateEmail = (input) => {
 	const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-	return re.test(String(email).toLowerCase());
+	re.test(input.value.trim())
+		? showSuccess(input)
+		: showError(input, "Email is not valid");
 };
 
 // Check required fields
@@ -35,16 +42,31 @@ const checkRequired = (inputArr) => {
 	});
 };
 
-// Get the input name
-const getFieldName = (input) => {
-	return input.id.charAt(0).toUpperCase() + input.id.slice(1);
+// Check input length
+const checkLength = (input, min, max) => {
+	if (input.value.length < min) {
+		showError(
+			input,
+			`${getFieldName(input)} must be at least ${min} characters`
+		);
+	} else if (input.value.length > max) {
+		showError(input, `${getFieldName(input)} cannot exceed ${max} characters `);
+	}
+};
+
+// Check matching passwords
+const checkPasswordMatch = (password, password2) => {
+	password2.value === password.value
+		? showSuccess(password2)
+		: showError(password2, "Password doesn't match");
 };
 
 // Event Listeners
 form.addEventListener("submit", function (e) {
 	e.preventDefault();
-
 	checkRequired([username, email, password, password2]);
-
-	!validateEmail(email.value) && showError(email, "Email is not valid");
+	checkLength(username, 6, 15);
+	checkLength(password, 8, 25);
+	validateEmail(email);
+	checkPasswordMatch(password, password2);
 });
