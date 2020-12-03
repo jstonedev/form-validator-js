@@ -55,10 +55,10 @@ const checkLength = (input, min, max) => {
 };
 
 // Check matching passwords
-const checkPasswordMatch = (password, password2) => {
-	password2.value === password.value
-		? showSuccess(password2)
-		: showError(password2, "Password doesn't match");
+const checkPasswordMatch = (input, input2) => {
+	input2.value === input.value
+		? showSuccess(input2)
+		: showError(input2, "Passwords don't match");
 };
 
 // Event Listeners
